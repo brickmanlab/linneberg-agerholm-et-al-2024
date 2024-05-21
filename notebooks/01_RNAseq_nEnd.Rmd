@@ -1,0 +1,68 @@
+---
+title: "O4Ch nEnd bulk RNAseq"
+author: "Madeleine Linneberg-Agerholm"
+date: '`r Sys.Date()`'
+knit: (function(inputFile, encoding) { 
+      rmarkdown::render(inputFile,
+                        encoding=encoding,
+                        output_format='all',
+                        output_dir='../reports/')})
+output:
+  # To create PDF report, uncomment below
+  #pdf_document:
+  #  toc: yes
+  html_document:
+    number_sections: yes
+    theme: yeti
+    toc: yes
+    toc_float: yes
+    df_print: paged
+    dev: png
+---
+
+```{r knitr, include = FALSE}
+DOCNAME = knitr::current_input()
+knitr::opts_chunk$set(autodep        = TRUE,
+                      cache          = FALSE,
+                      cache.path     = paste0("cache/", DOCNAME, "/"),
+                      cache.comments = TRUE,
+                      echo           = TRUE,
+                      error          = FALSE,
+                      fig.align      = "center",
+                      fig.path       = paste0("../reports/figures/", DOCNAME, "/"),
+                      fig.width      = 10,
+                      fig.height     = 8,
+                      message        = FALSE,
+                      warning        = FALSE)
+```
+
+# Introduction
+
+This is a bulk RNAseq analysis template using the DESEQ2 package
+
+# Load libraries
+
+```{r}
+library(DESeq2)
+```
+
+# Load data and create DESeq object
+
+```{r}
+countData <- as.matrix(read.table("O4Ch nEnd RNA-seq raw counts_annot_nodup.txt", header = TRUE, row.names = 1))
+colData <- data.frame(condition = c("Oct4", "Oct4", "Oct4", "DP", "DP", "DP", "Pdgfra", "Pdgfra", "Pdgfra"), replicate = c("1", "2", "3", "1", "2", "3", "1", "2", "3"))
+rownames(colData) <- colnames(countData)
+
+dds <- DESeqDataSetFromMatrix(countData, colData, design = ~ condition + replicate)
+dds <- DESeq(dds)
+dds <- estimateSizeFactors(dds)
+normalized_data_bulk_nEnd <- counts(dds, normalized=TRUE)
+
+write.csv(normalized_data_bulk_nEnd, file="normalized_data_bulk_nEnd.csv")
+```
+
+# Session info
+
+```{r session-info, cache = FALSE}
+devtools::session_info()
+```

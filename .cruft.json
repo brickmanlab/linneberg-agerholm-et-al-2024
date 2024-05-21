@@ -1,0 +1,19 @@
+{
+  "template": "https://github.com/brickmanlab/ngs-template",
+  "commit": "97ee931effc53886fabc293a0dce238aeb98800b",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project": "linneberg_agerholm_et_al_2024",
+      "__project_name": "linneberg_agerholm_et_al_2024",
+      "author": "Madeleine LInneberg-Agerholm",
+      "date": "20240517",
+      "description": "The primitive endoderm supports lineage plasticity to enable regulative development",
+      "_extensions": [
+        "jinja2_time.TimeExtension"
+      ],
+      "_template": "https://github.com/brickmanlab/ngs-template"
+    }
+  },
+  "directory": "project"
+}

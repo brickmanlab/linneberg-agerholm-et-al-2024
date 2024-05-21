@@ -1,0 +1,76 @@
+---
+title: "Create RDS and Seurat object from EPUc scRNA-seq data"
+author: "Madeleine Linneberg-Agerholm"
+date: '`r Sys.Date()`'
+knit: (function(inputFile, encoding) { 
+      rmarkdown::render(inputFile,
+                        encoding=encoding,
+                        output_format='all',
+                        output_dir='../reports/')})
+output:
+  # To create PDF report, uncomment below
+  #pdf_document:
+  #  toc: yes
+  html_document:
+    number_sections: yes
+    theme: yeti
+    toc: yes
+    toc_float: yes
+    df_print: paged
+    dev: png
+---
+
+```{r knitr, include = FALSE}
+DOCNAME = knitr::current_input()
+knitr::opts_chunk$set(autodep        = TRUE,
+                      cache          = FALSE,
+                      cache.path     = paste0("cache/", DOCNAME, "/"),
+                      cache.comments = TRUE,
+                      echo           = TRUE,
+                      error          = FALSE,
+                      fig.align      = "center",
+                      fig.path       = paste0("../reports/figures/", DOCNAME, "/"),
+                      fig.width      = 10,
+                      fig.height     = 8,
+                      message        = FALSE,
+                      warning        = FALSE)
+```
+
+# Introduction
+
+In this notebook I merge `S1` and `S2` experiments from demultiplexing.
+A dual-index kit was used here.
+
+```{r}
+library(Seurat)
+```
+
+
+```{r}
+L1 <- Read10X("filtered_feature_bc_matrix/")
+L1_seu <- CreateSeuratObject(counts = L1)
+L1_seu@meta.data$Stage <- "-4OHT"
+View(L1_seu@meta.data)
+
+L2 <- Read10X("filtered_feature_bc_matrix/")
+L2_seu <- CreateSeuratObject(counts = L2)
+L2_seu@meta.data$Stage <- "+4OHT"
+View(L2_seu@meta.data)
+```
+
+```{r}
+data <- merge(L1_seu, y = L2_seu)
+View(data@meta.data)
+```
+
+## Merge
+
+```{r}
+saveRDS(data, file = "00_EPUc_seurat_merged.rds")
+```
+
+# Session info
+
+```{r session-info, cache = FALSE}
+devtools::session_info()
+```
